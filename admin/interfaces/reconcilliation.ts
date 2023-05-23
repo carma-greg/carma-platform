@@ -28,6 +28,7 @@ export interface PromoSplitDetails {
 
 export interface AppResponse {
     response: AppResults
+    remaining: number
 }
 
 export interface AppResults {

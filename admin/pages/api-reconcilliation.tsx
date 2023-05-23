@@ -1,6 +1,7 @@
 import { PageContainer } from '@keystone-6/core/admin-ui/components';
 import { Heading } from '@keystone-ui/core';
 import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
 import { AppResponse, AppResults, AppOffer, Promotion, PromotionData, PromoCategory, PromoSplitDetails, TableProps, ApiArray, ApiArrayItem } from '../interfaces/reconcilliation';
 import ApiTable from '../components/api-table';
 import {useMemo} from "react";
@@ -19,13 +20,14 @@ interface RequestParams {
 }
 
 const fetcher = async ({target: url, token, method, paginate} :RequestParams) => {
-
-    const pageCount: number  = 100;
-    const noOfPages = 0
-    const cursor = 0
+    console.log("fetching...")
+    // const pageCount: number  = 100;
+    // const noOfPages = 0
+    // const cursor = 0
     const requestHeaders = new Headers();
     
     if (token) {
+        console.log("token!")
         requestHeaders.append("Authorization", token) 
     }
 
@@ -35,14 +37,18 @@ const fetcher = async ({target: url, token, method, paginate} :RequestParams) =>
         redirect: 'follow'
     };
 
+    console.log(requestOptions)
     const apiResonse = await fetch(url, requestOptions)
     
     if (!apiResonse.ok) {
+        console.log("error")
         const error = new Error('An error occurred while fetching the data.')
         // Attach extra info to the error object.
         throw error
-      }
-
+    }
+    if(paginate){
+        console.log("paginate2")
+    }
     return (
         apiResonse.json()
     )
@@ -65,9 +71,9 @@ function ApiDisplay() {
     const {data: bubbleData, error: bubbleError, isLoading: bubbleIsLoading} = callAPI<AppResponse>(bubbleOffersUrl, bubbleOffersToken, "GET", true)
     const {data: nbData, error: nBError, isLoading: nBIsLoading} = callAPI<Promotion[]>(networkBOffersUrl, null, "GET", false)
 
-    const combinedArray = getArrData(bubbleData, nbData)
+    // const combinedArray = getArrData(bubbleData, nbData)
 
-    console.log("data", bubbleData?.response.results)
+    console.log("data", bubbleData)
     console.log("NB", nbData)
 
 
@@ -78,7 +84,7 @@ function ApiDisplay() {
             isLoading = {bubbleIsLoading || nBIsLoading}
             isResponseData = {bubbleData || nbData}
         />
-        {combinedArray && <ApiTable tableProps={combinedArray.dataArr}></ApiTable>}
+        {/* {combinedArray && <ApiTable tableProps={combinedArray.dataArr}></ApiTable>} */}
         {/* {combinedArray && <ApiTable tableProps={combinedArray.singleArr}></ApiTable>} */}
         </>
     )
@@ -118,10 +124,28 @@ const getArrData = (bubbleData: AppResponse | null | undefined, nbData:  Promoti
 
 }
 const callAPI = <T,>(target: string, token: string | null, method: string, paginate: boolean) => {
-    const { data, error, isLoading} = useSWR<T>({target, token, method, paginate}, fetcher)
-    return (
-        {data, error, isLoading}
-    )
+    if(paginate){
+        console.log("paginate1")
+        const getKey = (pageIndex: number, previousPageData: AppResponse) => {
+            if (previousPageData.remaining === 0) {
+                console.log("end")
+                return null
+            }
+            console.log(`${target}?cursor=${pageIndex}`)
+            return [`${target}?cursor=${pageIndex}`, token, method, paginate]
+        }
+
+        const { data, error, isLoading } = useSWRInfinite<T>(getKey, fetcher)
+
+        return (
+            {data, error, isLoading}
+        )
+    } else {
+        const { data, error, isLoading} = useSWR<T>({target, token, method}, fetcher)
+        return (
+            {data, error, isLoading}
+        )
+    }
     
 }
 
