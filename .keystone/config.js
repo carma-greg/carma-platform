@@ -142,6 +142,17 @@ var lists = {
       // this can be helpful to find out all the Posts associated with a Tag
       posts: (0, import_fields.relationship)({ ref: "Post.tags", many: true })
     }
+  }),
+  FileUpload: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      fileUpload: (0, import_fields.file)({
+        storage: "files"
+      }),
+      jsonUpload: (0, import_fields.file)({
+        storage: "apiJson"
+      })
+    }
   })
 };
 
@@ -193,11 +204,21 @@ var keystone_default = withAuth(
       files: {
         kind: "local",
         type: "file",
-        generateUrl: (path) => `/files${path}`,
+        generateUrl: (path) => `http://localhost:3000/files${path}`,
         serverRoute: {
           path: "/files"
         },
         storagePath: "public/files"
+      },
+      apiJson: {
+        kind: "local",
+        type: "file",
+        transformName: (filename) => `${filename}`,
+        generateUrl: (path) => `http://localhost:3000/files/json${path}`,
+        serverRoute: {
+          path: "/json"
+        },
+        storagePath: "public/files/json"
       }
     }
   })

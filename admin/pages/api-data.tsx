@@ -11,10 +11,7 @@ function uploadFile(textField: string, fileName: string) {
     query: `
       mutation ($file: Upload!) {
         uploadFile(file: $file) {
-          # Specify the fields you expect in the response
-          id
           filename
-          # ...other fields
         }
       }
     `,
@@ -24,17 +21,18 @@ function uploadFile(textField: string, fileName: string) {
   });
 
   formData.append('operations', operations);
-
+  console.log(formData)
   const map = JSON.stringify({
     '0': ['variables.file'],
   });
 
   formData.append('map', map);
-
+  console.log(formData)
   const blob = new Blob([text], { type: 'text/json' });
 
   formData.append('0', blob,  fileName+'.json');
-    fetch('files/', {
+  console.log(formData)
+    fetch('http://localhost:3000/files/bubble.json', {
       method: 'POST',
       body: formData,
     })

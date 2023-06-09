@@ -31,11 +31,21 @@ export default withAuth(
             files: {
                 kind: 'local',
                 type: 'file',
-                generateUrl: path => `/files${path}`,
+                generateUrl: path => `http://localhost:3000/files${path}`,
                 serverRoute: {
-                path: '/files',
+                    path: '/files',
                 },
                 storagePath: 'public/files',
+            },
+            apiJson: {
+                kind: 'local',
+                type: 'file',
+                transformName: (filename) => `${filename}`,
+                generateUrl: path => `http://localhost:3000/files/json${path}`,
+                serverRoute: {
+                    path: '/json',
+                },
+                storagePath: 'public/files/json',
             },
         },
     })
