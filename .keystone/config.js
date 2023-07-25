@@ -194,6 +194,15 @@ var import_dotenv = __toESM(require("dotenv"));
 import_dotenv.default.config();
 var keystone_default = withAuth(
   (0, import_core2.config)({
+    server: {
+      cors: {
+        "origin": "*",
+        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+        "preflightContinue": false,
+        "optionsSuccessStatus": 204
+      },
+      port: 3e3
+    },
     db: {
       provider: "sqlite",
       url: "file:./keystone.db"

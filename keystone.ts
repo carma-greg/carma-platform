@@ -6,6 +6,8 @@
 //   you can find out more at https://keystonejs.com/docs/apis/config
 
 import { config } from '@keystone-6/core';
+import type { ServerConfig } from '@keystone-6/core/types';
+
 
 // to keep this file tidy, we define our schema in a different file
 import { lists } from './schema';
@@ -21,6 +23,15 @@ dotenv.config();
 
 export default withAuth(
     config({
+        server: {
+            cors: {
+                "origin": "*",
+                "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+                "preflightContinue": false,
+                "optionsSuccessStatus": 204
+            },
+            port: 3000
+        },
         db: {
         provider: 'sqlite',
         url: 'file:./keystone.db',
