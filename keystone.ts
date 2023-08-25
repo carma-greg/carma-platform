@@ -42,7 +42,7 @@ export default withAuth(
             files: {
                 kind: 'local',
                 type: 'file',
-                generateUrl: path => `http://localhost:3000/files${path}`,
+                generateUrl: path => `/files${path}`,
                 serverRoute: {
                     path: '/files',
                 },
@@ -52,7 +52,7 @@ export default withAuth(
                 kind: 'local',
                 type: 'file',
                 transformName: (filename) => `${filename}`,
-                generateUrl: path => `http://localhost:3000/files/json${path}`,
+                generateUrl: path => `/files/json${path}`,
                 serverRoute: {
                     path: '/json',
                 },
