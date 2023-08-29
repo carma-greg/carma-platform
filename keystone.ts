@@ -18,6 +18,7 @@ import dotenv from "dotenv"
 import type { StorageConfig } from '@keystone-6/core/types'
 
 const express = require('express');
+const jwt = require('jsonwebtoken');
 
 dotenv.config();
 
@@ -42,8 +43,12 @@ export default withAuth(
                         headers: { "Content-Type": "application/json" }
                     });
                     const cred = await response.json();
+                    
+                    console.log(cred.response.user_id)
                     if (response.ok){
-                        res.send(cred)
+                        res.send(jwt.sign({ id: cred.response.user_id, token: cred.response.token }, process.env.JWT_SECRET, {
+                            expiresIn: cred.response.expires,
+                          }))
                     } else {
                         res.send(`{
                             "response": "no bueno"

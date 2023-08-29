@@ -192,6 +192,7 @@ var session = (0, import_session.statelessSessions)({
 // keystone.ts
 var import_dotenv = __toESM(require("dotenv"));
 var express = require("express");
+var jwt = require("jsonwebtoken");
 import_dotenv.default.config();
 var keystone_default = withAuth(
   (0, import_core2.config)({
@@ -214,8 +215,11 @@ var keystone_default = withAuth(
             headers: { "Content-Type": "application/json" }
           });
           const cred = await response.json();
+          console.log(cred.response.user_id);
           if (response.ok) {
-            res.send(cred);
+            res.send(jwt.sign({ id: cred.response.user_id, token: cred.response.token }, process.env.JWT_SECRET, {
+              expiresIn: cred.response.expires
+            }));
           } else {
             res.send(`{
                             "response": "no bueno"
