@@ -8,7 +8,6 @@
 import { config } from '@keystone-6/core';
 import type { ServerConfig } from '@keystone-6/core/types';
 
-
 // to keep this file tidy, we define our schema in a different file
 import { lists } from './schema';
 
@@ -18,6 +17,7 @@ import { withAuth, session } from './auth';
 import dotenv from "dotenv"
 import type { StorageConfig } from '@keystone-6/core/types'
 
+const express = require('express');
 
 dotenv.config();
 
@@ -30,7 +30,30 @@ export default withAuth(
                 "preflightContinue": false,
                 "optionsSuccessStatus": 204
             },
-            port: 3000
+            port: 3001,
+            extendExpressApp: (app, commonContext) => {
+                app.use(express.json());  
+                app.post('/api/user-signin', async (req, res) => {
+                    console.log(req.body);
+                    const creds = req.body;
+                    const response = await fetch("https://app.carma.earth/api/1.1/wf/aws_login", {
+                        method: 'POST',
+                        body: JSON.stringify(creds),
+                        headers: { "Content-Type": "application/json" }
+                    });
+                    const cred = await response.json();
+                    if (response.ok){
+                        res.send(cred)
+                    } else {
+                        res.send(`{
+                            "response": "no bueno"
+                        }`)
+                    }
+                });
+                app.get('/_version', (req, res) => {
+                  res.send('v6.0.0-rc.2');
+                });
+            },
         },
         db: {
         provider: 'sqlite',
