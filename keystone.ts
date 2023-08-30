@@ -33,36 +33,28 @@ export default withAuth(
             },
             port: 3001,
             extendExpressApp: (app, commonContext) => {
-                app.use(express.json());  
+                app.use(express.json());
                 app.post('/api/user-signin', async (req, res) => {
-                    console.log(req.body);
                     const creds = req.body;
-                    const response = await fetch("https://app.carma.earth/api/1.1/wf/aws_login", {
-                        method: 'POST',
-                        body: JSON.stringify(creds),
-                        headers: { "Content-Type": "application/json" }
+                    try {
+                        const response = await fetch("https://app.carma.earth/api/1.1/wf/aws_login", {
+                            method: 'POST',
+                            body: JSON.stringify(creds),
+                            headers: { "Content-Type": "application/json" }
+                        });
+                        const cred = await response.json();
+                        
+                        console.log(cred.response.user_id)
+                            res.send(JSON.stringify(cred.response.user_id))
+                        } catch(error) {
+                            res.send(false)
+                        }
                     });
-                    const cred = await response.json();
-                    
-                    console.log(cred.response.user_id)
-                    if (response.ok){
-                        res.send(jwt.sign({ id: cred.response.user_id, token: cred.response.token }, process.env.JWT_SECRET, {
-                            expiresIn: cred.response.expires,
-                          }))
-                    } else {
-                        res.send(`{
-                            "response": "no bueno"
-                        }`)
-                    }
-                });
-                app.get('/_version', (req, res) => {
-                  res.send('v6.0.0-rc.2');
-                });
             },
         },
         db: {
-        provider: 'sqlite',
-        url: 'file:./keystone.db',
+        provider: 'postgresql',
+        url: 'postgresql://carma_root:root_carma@127.0.0.1:5432/carma_platform',
         },
         lists,
         session,
