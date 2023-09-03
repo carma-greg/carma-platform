@@ -153,6 +153,15 @@ var lists = {
         storage: "apiJson"
       })
     }
+  }),
+  Event: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      title: (0, import_fields.text)({ validation: { isRequired: true } }),
+      description: (0, import_fields.text)({ validation: { isRequired: true } }),
+      linkText: (0, import_fields.text)({ validation: { isRequired: true } }),
+      linkUrl: (0, import_fields.text)({ validation: { isRequired: true } })
+    }
   })
 };
 
@@ -209,7 +218,7 @@ var keystone_default = withAuth(
         app.post("/api/user-signin", async (req, res) => {
           const creds = req.body;
           try {
-            const response = await fetch("https://app.carma.earth/api/1.1/wf/aws_login", {
+            const response = await fetch("https://app.carma.earth/version-7b11/api/1.1/wf/aws_login", {
               method: "POST",
               body: JSON.stringify(creds),
               headers: { "Content-Type": "application/json" }
@@ -252,3 +261,4 @@ var keystone_default = withAuth(
     }
   })
 );
+//# sourceMappingURL=config.js.map

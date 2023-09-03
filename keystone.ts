@@ -37,7 +37,7 @@ export default withAuth(
                 app.post('/api/user-signin', async (req, res) => {
                     const creds = req.body;
                     try {
-                        const response = await fetch("https://app.carma.earth/api/1.1/wf/aws_login", {
+                        const response = await fetch("https://app.carma.earth/version-7b11/api/1.1/wf/aws_login", {
                             method: 'POST',
                             body: JSON.stringify(creds),
                             headers: { "Content-Type": "application/json" }

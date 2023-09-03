@@ -142,9 +142,9 @@ export const lists: Lists = {
 
         // this is the fields for our Tag list
         fields: {
-        name: text(),
-        // this can be helpful to find out all the Posts associated with a Tag
-        posts: relationship({ ref: 'Post.tags', many: true }),
+            name: text(),
+            // this can be helpful to find out all the Posts associated with a Tag
+            posts: relationship({ ref: 'Post.tags', many: true }),
         },
     }),
     FileUpload: list({
@@ -158,4 +158,13 @@ export const lists: Lists = {
             })
         }
     }),
+    Event: list({
+        access: allowAll,
+        fields: {
+            title: text({ validation: { isRequired: true } }),
+            description: text({ validation: { isRequired: true } }),
+            linkText: text({ validation: { isRequired: true } }),
+            linkUrl: text({ validation: { isRequired: true } }),
+        }
+    })
 };

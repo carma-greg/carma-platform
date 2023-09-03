@@ -309,6 +309,56 @@ input FileUploadCreateInput {
   jsonUpload: FileFieldInput
 }
 
+type Event {
+  id: ID!
+  title: String
+  description: String
+  linkText: String
+  linkUrl: String
+}
+
+input EventWhereUniqueInput {
+  id: ID
+}
+
+input EventWhereInput {
+  AND: [EventWhereInput!]
+  OR: [EventWhereInput!]
+  NOT: [EventWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  description: StringFilter
+  linkText: StringFilter
+  linkUrl: StringFilter
+}
+
+input EventOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  description: OrderDirection
+  linkText: OrderDirection
+  linkUrl: OrderDirection
+}
+
+input EventUpdateInput {
+  title: String
+  description: String
+  linkText: String
+  linkUrl: String
+}
+
+input EventUpdateArgs {
+  where: EventWhereUniqueInput!
+  data: EventUpdateInput!
+}
+
+input EventCreateInput {
+  title: String
+  description: String
+  linkText: String
+  linkUrl: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -339,6 +389,12 @@ type Mutation {
   updateFileUploads(data: [FileUploadUpdateArgs!]!): [FileUpload]
   deleteFileUpload(where: FileUploadWhereUniqueInput!): FileUpload
   deleteFileUploads(where: [FileUploadWhereUniqueInput!]!): [FileUpload]
+  createEvent(data: EventCreateInput!): Event
+  createEvents(data: [EventCreateInput!]!): [Event]
+  updateEvent(where: EventWhereUniqueInput!, data: EventUpdateInput!): Event
+  updateEvents(data: [EventUpdateArgs!]!): [Event]
+  deleteEvent(where: EventWhereUniqueInput!): Event
+  deleteEvents(where: [EventWhereUniqueInput!]!): [Event]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -374,6 +430,9 @@ type Query {
   fileUploads(where: FileUploadWhereInput! = {}, orderBy: [FileUploadOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: FileUploadWhereUniqueInput): [FileUpload!]
   fileUpload(where: FileUploadWhereUniqueInput!): FileUpload
   fileUploadsCount(where: FileUploadWhereInput! = {}): Int
+  events(where: EventWhereInput! = {}, orderBy: [EventOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EventWhereUniqueInput): [Event!]
+  event(where: EventWhereUniqueInput!): Event
+  eventsCount(where: EventWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

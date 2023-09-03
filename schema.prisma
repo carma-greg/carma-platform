@@ -44,3 +44,11 @@ model FileUpload {
   jsonUpload_filesize Int?
   jsonUpload_filename String?
 }
+
+model Event {
+  id          String @id @default(cuid())
+  title       String @default("")
+  description String @default("")
+  linkText    String @default("")
+  linkUrl     String @default("")
+}
